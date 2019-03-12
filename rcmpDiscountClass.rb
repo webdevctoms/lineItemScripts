@@ -1,8 +1,11 @@
 class RCMPDiscounts
-	def initialize(cart)
+	def initialize(cart,tag)
 		@cart = cart
-		@discountTag = "rcmp"
-		@message = "RCMP Discount"
+		@discountTag = tag
+	end
+	
+	def numeric?(num)
+	    return Float(num) != nil rescue false
 	end
 
 	def run()
@@ -13,11 +16,12 @@ class RCMPDiscounts
 				currentProductTags.each do |tag|
 					if tag.include?(@discountTag)
 						quantity = line_item.quantity
-						trimmedTag = tag.split("__")[1]				
+						trimmedTag = tag.split("__")[1]		
 						discountPrice = trimmedTag.split("_")[1]
-						newPrice = Money.new(cents: 100) * discountPrice * quantity
-						line_item.change_line_price(newPrice, message: @message)
-						
+						if self.numeric?(discountPrice)
+	  						newPrice = Money.new(cents: 100) * discountPrice * quantity
+	  						line_item.change_line_price(newPrice, message: @message)
+						end
 					end
 				end		
 			end	
@@ -25,7 +29,7 @@ class RCMPDiscounts
 	end	
 end
 
-CAMPAIGNS = [RCMPDiscounts.new(Input.cart)]
+CAMPAIGNS = [RCMPDiscounts.new(Input.cart,"rcmp")]
 
 CAMPAIGNS.each do |campaign|
   campaign.run()

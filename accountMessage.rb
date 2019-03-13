@@ -2,6 +2,7 @@ class AccountMessage
 	def initialize(cart,tag)
 		@cart = cart
 		@accountTag = tag
+		@visibleTag = "__" + tag + "_visible"
 	end
 
 	def run()
@@ -10,7 +11,7 @@ class AccountMessage
 		else
 			@cart.line_items.each do |line_item|
 				product = line_item.variant.product
-				if product&.tags&.include? '__rcmp_visible'
+				if product&.tags&.include? @visibleTag
 					newProperties = line_item.properties_was
 			      	newProperties["Account Not Authorized to Purchase this Item"] = "Please remove item from your cart"
 			      	line_item.change_properties(newProperties, message: "Incorrect Account")

@@ -2,6 +2,7 @@ class RCMPDiscounts
 	def initialize(cart,tag)
 		@cart = cart
 		@discountTag = tag
+		@message = tag.upcase + " discount"
 	end
 	
 	def numeric?(num)
